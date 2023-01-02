@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bdqn.dao.BillMapper">
+
+    <select id="findBillList" resultType="com.bdqn.entity.Bill">
+        select b.*,t.name as typeName from bills b inner join billtype t on t.id = b.typeid
+        <where>
+            <if test="typeId!=null">
+                and b.typeId = #{typeId}
+            </if>
+            <if test="startDate!=null">
+                <![CDATA[ and b.billTime >= #{startDate} ]]>
+            </if>
+            <if test="endDate!=null">
+                <![CDATA[ and b.billTime <= #{endDate} ]]>
+            </if>
+        </where>
+        order by id desc
+    </select>
+
+    <insert id="addBill">
+        insert into bills(title,billtime,typeid,price,remark) values(#{title},#{billTime},#{typeId},#{price},#{remark})
+    </insert>
+
+    <update id="updateBill">
+        update bills
+        <set>
+            <if test="title!=null and title!=''">
+                title = #{title},
+            </if>
+            <if test="billTime!=null">
+                billtime = #{billTime},
+            </if>
+            <if test="typeId!=null">
+                typeId = #{typeId},
+            </if>
+            <if test="price!=null">
+                price = #{price},
+            </if>
+            <if test="remark!=null and remark!=''">
+                remark = #{remark},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        delete from bills where id = #{id}
+    </delete>
+
+</mapper>
